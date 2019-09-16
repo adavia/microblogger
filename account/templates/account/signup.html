@@ -1,0 +1,46 @@
+{% extends "account/base.html" %}
+
+{% block content %}
+    <main class="container mx-auto px-6 pt-16">
+        <h1 class="text-4xl text-center font-bold mb-10" 
+            style="font-family: 'Inconsolata', monospace">
+            Please fill the form below in order to sign up
+        </h1>
+        <div class="mx-auto max-w-md">
+            <form method="POST">
+                {% csrf_token %}
+                <div class="w-full mb-6">
+                    {% include "shared/form_fields.html" with 
+                        field=form.email 
+                        type="input" 
+                        label=form.email.label_tag
+                    %}
+                </div>
+                <div class="w-full mb-6">
+                    {% include "shared/form_fields.html" with 
+                        field=form.password1
+                        type="password" 
+                        label="Password" 
+                    %}
+                </div>
+                <div class="w-full mb-6">
+                    {% include "shared/form_fields.html" with 
+                        field=form.password2
+                        type="password" 
+                        label="Confirm your password" 
+                    %}
+                </div>
+                <button type="submit" class="bg-transparent hover:bg-indigo-500 
+                    text-indigo-700 hover:text-white py-2 px-4 border 
+                    border-indigo-500 hover:border-transparent rounded">
+                    Submit
+                </button>
+                <p class="text-indigo-700 mt-5">Already a member? 
+                    <a class="text-gray-600" href="{% url 'login' %}">
+                        Login now
+                    </a>
+                </p>
+            </form>
+        </div>
+    <main>
+{% endblock content %}
