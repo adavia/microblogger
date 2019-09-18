@@ -1,6 +1,86 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Dashboard</h1>
-    <p>Welcome to your dashboard.</p>
+    <div class="border-b-8 border-indigo-600 p-6">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="w-full mb-6">
+                <label 
+                    for="{{form.content.id_for_label}}" 
+                    class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
+                    What are you thinking?
+                </label>
+                <textarea
+                    name="{{form.content.html_name}}"
+                    id="{{form.content.id_for_label}}"
+                    placeholder="{{form.content.label}}"
+                    rows="3" 
+                    class="appearance-none block w-full text-gray-700 border-b 
+                        {% if form.content.errors %} border-red-500 
+                        {% else %} border-gray-400 {% endif %} 
+                        py-3 px-4 leading-tight focus:outline-none">{% if form.content.value %} {{form.content.value}} {% endif %}</textarea>
+                {% for error in form.content.errors %}
+                    <p class="text-red-500 text-xs mt-2">{{error}}</p>
+                {% endfor %}
+            </div>
+            <div class="flex items-center">
+                <label class="cursor-pointer mr-auto rounded-full border 
+                    border-indigo-500 h-12 w-12 flex items-center justify-center">
+                    <svg class="stroke-current text-indigo-500 h-6 w-6" 
+                        viewBox="0 0 20 20">
+                        <path d="M18.555,15.354V4.592c0-0.248-0.202-0.451-0.45-0.451H1.888c-0.248,
+                            0-0.451,0.203-0.451,0.451v10.808c0,0.559,0.751,0.451,0.451,
+                            0.451h16.217h0.005C18.793,15.851,18.478,14.814,18.555,
+                            15.354 M2.8,14.949l4.944-6.464l4.144,5.419c0.003,0.003,0.003,0.003,
+                            0.003,0.005l0.797,1.04H2.8z M13.822,14.949l-1.006-1.317l1.689-2.218l2.688,
+                            3.535H13.822z M17.654,14.064l-2.791-3.666c-0.181-0.237-0.535-0.237-0.716,
+                            0l-1.899,2.493l-4.146-5.42c-0.18-0.237-0.536-0.237-0.716,0l-5.047,
+                            6.598V5.042h15.316V14.064z M12.474,6.393c-0.869,0-1.577,0.707-1.577,
+                            1.576s0.708,1.576,1.577,1.576s1.577-0.707,1.577-1.576S13.343,6.393,
+                            12.474,6.393 M12.474,8.645c-0.371,0-0.676-0.304-0.676-0.676s0.305-0.676,
+                            0.676-0.676c0.372,0,0.676,0.304,0.676,0.676S12.846,8.645,12.474,8.645">
+                        </path>
+                    </svg>
+                    <input type="file" name="image" class="hidden" multiple>
+                </label>
+                <button type="submit" class="bg-transparent hover:bg-indigo-500 
+                    text-indigo-700 hover:text-white py-2 px-4 border 
+                    border-indigo-500 hover:border-transparent rounded">
+                    Post something new!
+                </button>
+            </div>
+        </form>
+    </div>
+    <section class="">
+        {% for post in posts %}
+            <article class="flex border-b p-6">
+                <div class="flex-shrink-0 rounded-full bg-indigo-300 h-16 w-16
+                    flex items-center justify-center">
+                    A
+                </div>
+                
+                <div class="pl-5">
+                    <h2 class="font-bold text-xl inline-block" 
+                        style="font-family: 'Inconsolata', monospace">
+                        Andres Da Via 
+                    </h2>
+                    <span class="text-gray-600 text-sm ml-2">@adavia</span>
+                    <span class="text-gray-600 text-sm ml-2">. 2 days ago</span>
+                    <p class="text-gray-700 mb-4">
+                        {{post.content}}
+                    </p>
+
+                    <div class="flex flex-wrap -mx-2">
+                        {% for image in post.post_images.all %}
+                            <div class="px-2">
+                                <img class="object-cover h-40 w-40 rounded shadow-md" 
+                                    src="{{image.thumbnail.url}}">
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </article>
+        {% endfor %}
+    </section>
 {% endblock content %}
+

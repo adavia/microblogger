@@ -13,7 +13,7 @@
 
 <body class="overflow-y-hidden" style="font-family: 'Montserrat', sans-serif">
     <div class="flex flex-no-wrap justify-between h-screen">
-        <nav class="w-full md:w-1/5 z-10 bg-indigo-100">
+        <nav class="w-full md:w-2/6 z-10 bg-indigo-100">
             {% with view_name=request.resolver_match.url_name %}
             <ul class="py-6">
                 <li class="px-6 pb-5">
@@ -62,7 +62,7 @@
                             0-0.414,0.187-0.414,0.415v3.313H5.032v-6.628h9.931V17.245z M3.133,
                             9.79l6.864-6.868l6.867,6.868H3.133z"></path>
 					    </svg>
-                        <span class="text-2xl font-bold inline-block align-middle ml-2">Home</span>
+                        <span class="text-xl font-bold inline-block align-middle ml-2">Home</span>
                     </a>
                 </li>
                 <li style="font-family: 'Inconsolata', monospace">
@@ -83,7 +83,7 @@
                             1.15V5.776l3.173-1.15V14.221z M17.547,15.371l-3.182-1.15V4.626l3.182,
                             1.15V15.371z"></path>
 					    </svg>
-                        <span class="text-2xl font-bold inline-block align-middle ml-2">Explore</span>
+                        <span class="text-xl font-bold inline-block align-middle ml-2">Explore</span>
                     </a>
                 </li>
                 <li style="font-family: 'Inconsolata', monospace">
@@ -105,7 +105,7 @@
                             0.188-0.139,0.229-0.248l1.51-4.098c0.916-2.487,3.708-3.773,
                             6.222-2.868C16.187,5.024,17.489,7.783,16.573,10.27"></path>
 					    </svg>
-                        <span class="text-2xl font-bold inline-block align-middle ml-2">Notifications</span>
+                        <span class="text-xl font-bold inline-block align-middle ml-2">Notifications</span>
                     </a>
                 </li>
                 <li style="font-family: 'Inconsolata', monospace">
@@ -126,7 +126,7 @@
                             3.959H2.917v9.167H6.25c0.229,0,0.417,0.187,0.417,
                             0.416v1.919l2.242-2.215c0.079-0.077,0.184-0.12,0.294-0.12h7.881V3.959z"></path>
 					    </svg>
-                        <span class="text-2xl font-bold inline-block align-middle ml-2">Messages</span>
+                        <span class="text-xl font-bold inline-block align-middle ml-2">Messages</span>
                     </a>
                 </li>
                 <li style="font-family: 'Inconsolata', monospace">
@@ -149,7 +149,7 @@
                             3.724-8.317,8.317-8.317c4.593,0,8.317,3.724,8.317,8.317C18.317,14.593,
                             14.593,18.317,10,18.317z"></path>
 					    </svg>
-                        <span class="text-2xl font-bold inline-block align-middle ml-2">Profile</span>
+                        <span class="text-xl font-bold inline-block align-middle ml-2">Profile</span>
                     </a>
                 </li>
                 <li class="relative" aria-haspopup="true" style="font-family: 'Inconsolata', monospace">
@@ -201,7 +201,7 @@
                             0-3.812-1.709-3.812-3.812c0-2.102,1.71-3.812,3.812-3.812c2.102,0,3.812,
                             1.71,3.812,3.812C13.812,12.104,12.102,13.812,10,13.812"></path>
 					    </svg>
-                        <span class="text-2xl font-bold inline-block align-middle ml-2">More options</span>
+                        <span class="text-xl font-bold inline-block align-middle ml-2">More options</span>
                     </a>
                     <div class="absolute hidden bg-white w-11/12 h-auto 
                         rounded shadow-md overflow-hidden ml-3">
@@ -248,9 +248,12 @@
             </ul>
             {% endwith %}
         </nav>
-        <main class="container md:w-4/5 mx-auto overflow-y-auto p-6">
+        <main class="md:w-5/6 mx-auto overflow-y-auto border-r">
             {% block content %}{% endblock content %}
         </main>
+        <div class="container md:w-3/6 mx-auto overflow-y-auto p-6">
+        
+        </div>
     </div>
     <script src="{% static 'js/index.js' %}"></script>
 </body>

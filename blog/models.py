@@ -1,3 +1,5 @@
+import uuid
+import os
 from django.db import models
 from django.utils import timezone
 from account.models import User
@@ -13,11 +15,28 @@ class Post(models.Model):
     class Meta: 
         ordering = ('created',) 
 
+def unique_file_name(filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (uuid.uuid4(), ext)
+    return filename
+
+def get_file_name(instance, filename):
+    return f"post/post_{instance.post.id}_{unique_file_name(filename)}"
+
+def get_thumb_name(instance, filename):
+    return f"post/thumbs/post_{instance.post.id}_{unique_file_name(filename)}"
+
 class PostImage(models.Model):
     post = models.ForeignKey(
         Post,
         related_name='post_images',
         on_delete=models.CASCADE
     )
-    image = models.ImageField(upload_to="posts")
-    thumbnail = models.ImageField(upload_to='posts/thumbs', editable=False, null=True)
+    image = models.ImageField(
+        upload_to=get_file_name
+    )
+    thumbnail = models.ImageField(
+        upload_to=get_thumb_name, 
+        editable=False, 
+        null=True
+    )
