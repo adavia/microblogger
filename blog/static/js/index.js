@@ -25,16 +25,23 @@ var posts = (function () {
         domPostItems.insertAdjacentHTML('afterbegin', data);
     }
 
+    function _clearForm(field) {
+        fieldMsg = field.nextElementSibling;
+
+        if (fieldMsg) {
+            fieldMsg.parentNode.removeChild(fieldMsg);
+        }
+
+        field.classList.remove('border-red-500');
+    }
+
     function _displayErrors(errors) {
         const keys = Object.keys(errors);
 
         for (const key of keys) {
             field = domFormPost.querySelector(`#id_${key}`);
-            fieldMsg = field.nextElementSibling;
 
-            if (fieldMsg) {
-                fieldMsg.parentNode.removeChild(fieldMsg);
-            }
+            _clearForm(field);
 
             field.classList.add('border-red-500');
             field.insertAdjacentHTML('afterend', `
@@ -68,6 +75,9 @@ var posts = (function () {
         const data = _buildFormData();
 
         httpPost(url, data, csrf).then(function (response) {
+            domFormPost.reset();
+            domPreviewImages.innerHTML = '';
+            _clearForm(domFieldContent);
             _render(response);
         }).catch(function (e) {
             _displayErrors(e.errors);
@@ -88,10 +98,33 @@ var posts = (function () {
             alert(e)
         });
     }
+    
+    function previewImage(event) {
+        domPreviewImages = domFormPost.querySelector('#id_preview_img');
+        
+        if (this.files) {
+            var filesize = this.files.length;
+
+            for (i = 0; i < filesize; i++) {
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    domPreviewImages.insertAdjacentHTML('beforeend', `
+                        <div class="bg-cover bg-center rounded-lg h-24 w-24 mx-2 mb-4" 
+                            style="background-image: url('${event.target.result}')">
+                            <span class="rounded-full cursor-pointer h-8 w-8 float-right flex items-center 
+                                justify-center bg-gray-800 text-white m-2">x</span>
+                        </div>
+                    `);
+                }
+                reader.readAsDataURL(this.files[i]);
+            }
+        }
+    }
 
     //Bind events
     domFormPost.addEventListener('submit', addNewPost);
     domPostItems.addEventListener('click', _delegate(_iconDeleteFilter, deletePost));
+    domFieldImages.addEventListener('change', previewImage);
 
     return {
         addNewPost: addNewPost,

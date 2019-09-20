@@ -5,28 +5,15 @@ from django.contrib.auth.forms import (
 )
 from django.contrib.auth.forms import UsernameField
 from django.contrib.auth import authenticate
-from . import models
+from .models import User
 
 logger = logging.getLogger(__name__)
 
 class UserCreationForm(DjangoUserCreationForm):
     class Meta(DjangoUserCreationForm.Meta):
-        model = models.User
-        fields = ('email',)
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email',)
         field_classes = {'email': UsernameField}
-    # def send_mail(self):
-    #     logger.info(
-    #         "Sending signup email for email=%s",
-    #         self.cleaned_data["email"],
-    #     )
-    #     message = "Welcome{}".format(self.cleaned_data["email"])
-    #     send_mail(
-    #         "Welcome to BookTime",
-    #         message,
-    #         "site@booktime.domain",
-    #         [self.cleaned_data["email"]],
-    #         fail_silently=True,
-    #     )
 
 class AuthenticationForm(forms.Form):
     email = forms.EmailField()

@@ -8,10 +8,10 @@
         <div class="flex items-center">
             <h2 class="font-bold text-xl" 
                 style="font-family: 'Inconsolata', monospace">
-                Andres Da Via 
+                {{post.author.first_name}} {{post.author.last_name}} 
             </h2>
-            <span class="text-gray-600 text-sm ml-3">@adavia</span>
-            <span class="text-gray-600 text-sm ml-3 mr-3">. 2 days ago</span>
+            <span class="text-gray-600 text-sm ml-3">@{{post.author.username}}</span>
+            <span class="text-gray-600 text-sm ml-3 mr-3">. {{post.date_posted|date:'Y-m-d H:i'}}</span>
             <form method="POST" action="{% url 'post_delete' post.id %}">
                 {% csrf_token %}
                 <svg class="stroke-current cursor-pointer text-indigo-500 post-delete 
