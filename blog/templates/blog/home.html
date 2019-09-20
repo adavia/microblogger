@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <div class="text-3xl font-bold leading-tight 
+        text-indigo-600 border-b p-4" 
+        style="font-family: 'Inconsolata', monospace">
+        Home
+    </div>
     <div class="border-b-8 border-indigo-600 p-6">
         <form method="POST" action="{% url 'home' %}" 
             enctype="multipart/form-data" id="id_form_post">

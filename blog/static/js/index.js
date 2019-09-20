@@ -95,7 +95,7 @@ var posts = (function () {
         httpDelete(url, csrf).then(function(response) { 
             domPostItems.removeChild(post);
         }).catch(function(e) {
-            alert(e)
+            console.log(e)
         });
     }
     
