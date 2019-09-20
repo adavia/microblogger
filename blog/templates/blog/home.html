@@ -2,7 +2,8 @@
 
 {% block content %}
     <div class="border-b-8 border-indigo-600 p-6">
-        <form method="POST" enctype="multipart/form-data">
+        <form method="POST" action="{% url 'home' %}" 
+            enctype="multipart/form-data" id="id_form_post">
             {% csrf_token %}
             <div class="w-full mb-6">
                 <label 
@@ -41,7 +42,7 @@
                             0.676-0.676c0.372,0,0.676,0.304,0.676,0.676S12.846,8.645,12.474,8.645">
                         </path>
                     </svg>
-                    <input type="file" name="image" class="hidden" multiple>
+                    <input type="file" name="image" class="hidden" id="id_image" multiple>
                 </label>
                 <button type="submit" class="bg-transparent hover:bg-indigo-500 
                     text-indigo-700 hover:text-white py-2 px-4 border 
@@ -51,35 +52,9 @@
             </div>
         </form>
     </div>
-    <section class="">
+    <section id="id_post_items">
         {% for post in posts %}
-            <article class="flex border-b p-6">
-                <div class="flex-shrink-0 rounded-full bg-indigo-300 h-16 w-16
-                    flex items-center justify-center">
-                    A
-                </div>
-                
-                <div class="pl-5">
-                    <h2 class="font-bold text-xl inline-block" 
-                        style="font-family: 'Inconsolata', monospace">
-                        Andres Da Via 
-                    </h2>
-                    <span class="text-gray-600 text-sm ml-2">@adavia</span>
-                    <span class="text-gray-600 text-sm ml-2">. 2 days ago</span>
-                    <p class="text-gray-700 mb-4">
-                        {{post.content}}
-                    </p>
-
-                    <div class="flex flex-wrap -mx-2">
-                        {% for image in post.post_images.all %}
-                            <div class="px-2">
-                                <img class="object-cover h-40 w-40 rounded shadow-md" 
-                                    src="{{image.thumbnail.url}}">
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-            </article>
+            {% include "blog/_post.html" %}
         {% endfor %}
     </section>
 {% endblock content %}
