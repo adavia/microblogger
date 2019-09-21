@@ -4,6 +4,26 @@ from django.contrib.auth.models import (
     BaseUserManager,
 )
 
+class Contact(models.Model):
+    user_from = models.ForeignKey('account.User',
+        related_name='rel_from_set',
+        on_delete=models.CASCADE
+    )
+    user_to = models.ForeignKey('account.User',
+        related_name='rel_to_set',
+        on_delete=models.CASCADE
+    )
+    created = models.DateTimeField(
+        auto_now_add=True,
+        db_index=True
+    )
+
+    class Meta:
+        ordering = ('-created',)
+
+    def __str__(self):
+        return f"{self.user_from} follows {self.user_to}"
+
 class UserManager(BaseUserManager):
     """Define a model manager for User model with no username field."""
 
@@ -52,6 +72,12 @@ class User(AbstractUser):
         'Email address', 
         max_length=255,
         unique=True
+    )
+    following = models.ManyToManyField(
+        'self',
+        through=Contact,
+        related_name='followers',
+        symmetrical=False
     )
 
     USERNAME_FIELD = 'email'

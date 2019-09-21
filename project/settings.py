@@ -34,7 +34,7 @@ LOGOUT_URL = 'account/logout'
 
 # Base user model
 
-AUTH_USER_MODEL = "account.User"
+AUTH_USER_MODEL = 'account.User'
 
 # Application definition
 

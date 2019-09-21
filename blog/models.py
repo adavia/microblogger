@@ -1,5 +1,6 @@
 import uuid
 import os
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from account.models import User
@@ -11,9 +12,10 @@ class Post(models.Model):
     updated = models.DateTimeField(auto_now=True)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     active = models.BooleanField(default=True) 
- 
-    class Meta: 
-        ordering = ('created',) 
+    users_like = models.ManyToManyField(settings.AUTH_USER_MODEL,
+        related_name='posts_liked',
+        blank=True
+    )
 
 def unique_file_name(filename):
     ext = filename.split('.')[-1]

@@ -59,9 +59,7 @@
         </form>
     </div>
     <section id="id_post_items">
-        {% for post in posts %}
-            {% include "blog/_post.html" %}
-        {% endfor %}
+        {% include "blog/_post_list.html" %}
     </section>
 {% endblock content %}
 

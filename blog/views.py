@@ -1,11 +1,15 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render
 from django.views.generic.base import View
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import DeleteView
 from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin
 )
+from .decorators import ajax_required
 from .models import Post, PostImage
 from .forms import PostForm
 
@@ -50,8 +54,27 @@ class HomeView(
 
     def get(self, request, *args, **kwargs):
         posts = Post.objects.all().order_by('-date_posted')
+        paginator = Paginator(posts, 3)
+        page = request.GET.get('page')
         form = self.form_class()
+        try:
+            posts = paginator.page(page)
+        except PageNotAnInteger:
+            posts = paginator.page(1)
+        except EmptyPage:
+            if request.is_ajax():
+                # If the request is AJAX and the page is out of range
+                # return an empty page
+                return HttpResponse('')
+            # If page is out of range deliver last page of results
+            posts = paginator.page(paginator.num_pages)
+        if request.is_ajax():
+            return render(request, 'blog/_post_list.html', {
+                'section': 'posts', 
+                'posts': posts
+            })
         return render(request, self.template_name, {
+            'section': 'posts', 
             'posts': posts,
             'form': form, 
         })
@@ -73,3 +96,21 @@ class PostDeleteView(
         if self.request.user == post.author:
             return True
         return False
+
+@ajax_required
+@login_required
+@require_POST
+def post_like(request):
+    post_id = request.POST.get('id')
+    action = request.POST.get('action')
+    if post_id and action:
+        try:
+            post = Post.objects.get(id=post_id)
+            if action == 'like':
+                post.users_like.add(request.user)
+            else:
+                post.users_like.remove(request.user)
+            return JsonResponse({'status':'ok'})
+        except:
+            pass
+    return JsonResponse({'status':'ok'})

@@ -1,7 +1,7 @@
 <article class="flex border-b p-6" id="id_post_{{post.id}}">
     <div class="flex-shrink-0 rounded-full bg-indigo-300 h-16 w-16
         flex items-center justify-center">
-        A
+        {{post.author.username|capfirst|slice:1}}
     </div>
     
     <div class="pl-5">
@@ -16,7 +16,7 @@
                 <form method="POST" action="{% url 'post_delete' post.id %}">
                     {% csrf_token %}
                     <svg class="stroke-current cursor-pointer text-indigo-500 post-delete 
-                        hover:text-indigo-700 inline-block h-5 w-5" viewBox="0 0 20 20">
+                        hover:text-indigo-700 h-5 w-5" viewBox="0 0 20 20">
                         <path d="M17.114,3.923h-4.589V2.427c0-0.252-0.207-0.459-0.46-0.459H7.935c-0.252,
                             0-0.459,0.207-0.459,0.459v1.496h-4.59c-0.252,0-0.459,0.205-0.459,0.459c0,0.252,
                             0.207,0.459,0.459,0.459h1.51v12.732c0,0.252,0.207,0.459,0.459,0.459h10.29c0.254,
@@ -43,6 +43,27 @@
                         src="{{image.thumbnail.url}}">
                 </div>
             {% endfor %}
+        </div>
+
+        <div class="mt-6">
+            {% with users_like=post.users_like.all %}
+                <a href="{% url 'post_like' %}" class="post-like" data-id="{{post.id}}" 
+                    data-action="{% if user in users_like %}un{% endif %}like">
+                    {% if user not in users_like %}
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                            class="fill-current cursor-pointer text-indigo-500
+                            hover:text-indigo-700 h-6 w-6" viewBox="0 0 24 24">
+                            <path d="M12 4.248c-3.148-5.402-12-3.825-12 2.944 0 4.661 5.571 9.427 12 15.808 6.43-6.381 12-11.147 12-15.808 0-6.792-8.875-8.306-12-2.944z"/>
+                        </svg>
+                    {% else %}
+                        <svg xmlns="http://www.w3.org/2000/svg" 
+                            class="fill-current cursor-pointer text-indigo-500
+                            hover:text-indigo-700 h-6 w-6" viewBox="0 0 24 24">
+                            <path d="M12 9.229c.234-1.12 1.547-6.229 5.382-6.229 2.22 0 4.618 1.551 4.618 5.003 0 3.907-3.627 8.47-10 12.629-6.373-4.159-10-8.722-10-12.629 0-3.484 2.369-5.005 4.577-5.005 3.923 0 5.145 5.126 5.423 6.231zm-12-1.226c0 4.068 3.06 9.481 12 14.997 8.94-5.516 12-10.929 12-14.997 0-7.962-9.648-9.028-12-3.737-2.338-5.262-12-4.27-12 3.737z"/>
+                        </svg>
+                    {% endif %}
+                </a>
+            {% endwith %}
         </div>
     </div>
 </article>
