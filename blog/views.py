@@ -9,6 +9,8 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin,
     UserPassesTestMixin
 )
+from actions.utils import create_action
+from actions.models import Action
 from .decorators import ajax_required
 from .models import Post, PostImage
 from .forms import PostForm
@@ -35,14 +37,8 @@ class HomeView(
             post.save()
             # Associate images to current post
             attached_images(request.FILES, post)
-            
-            images = []
-
-            for img in post.post_images.all():
-                images.append({
-                    'thumb': img.thumbnail.url,
-                    'original': img.image.url
-                })
+            # Trigger action
+            create_action(request.user, 'created new post')
 
             return render(request, 'blog/_post.html', {
                 'post': post
@@ -54,9 +50,10 @@ class HomeView(
 
     def get(self, request, *args, **kwargs):
         posts = Post.objects.all().order_by('-date_posted')
-        paginator = Paginator(posts, 3)
+        paginator = Paginator(posts, 10)
         page = request.GET.get('page')
         form = self.form_class()
+
         try:
             posts = paginator.page(page)
         except PageNotAnInteger:
@@ -70,11 +67,9 @@ class HomeView(
             posts = paginator.page(paginator.num_pages)
         if request.is_ajax():
             return render(request, 'blog/_post_list.html', {
-                'section': 'posts', 
                 'posts': posts
             })
         return render(request, self.template_name, {
-            'section': 'posts', 
             'posts': posts,
             'form': form, 
         })
@@ -108,6 +103,7 @@ def post_like(request):
             post = Post.objects.get(id=post_id)
             if action == 'like':
                 post.users_like.add(request.user)
+                create_action(request.user, 'liked', post)
             else:
                 post.users_like.remove(request.user)
             return JsonResponse({'status':'ok'})

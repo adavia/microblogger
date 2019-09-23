@@ -44,6 +44,7 @@ ABSOLUTE_URL_OVERRIDES = {
 # Application definition
 
 INSTALLED_APPS = [
+    'actions.apps.ActionsConfig',
     'blog.apps.BlogConfig',
     'account.apps.AccountConfig',
     'django.contrib.admin',
@@ -77,6 +78,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'actions.context_processors.feed',
             ],
         },
     },

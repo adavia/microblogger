@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from django.contrib import messages
 from blog.decorators import ajax_required
+from actions.utils import create_action
 from .forms import UserCreationForm
 from .models import User, Contact
 
@@ -24,7 +25,9 @@ class SignupView(FormView):
         
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.save()
+        new_user = form.save()
+        # Trigger action
+        create_action(new_user, 'has created an account')
         email = form.cleaned_data.get('email')
         raw_password = form.cleaned_data.get('password1')
         logger.info(
@@ -68,6 +71,8 @@ def user_follow(request):
                 Contact.objects.get_or_create(
                     user_from=request.user,
                     user_to=user)
+                # Trigger action
+                create_action(request.user, 'is following', user)
             else:
                 Contact.objects.filter(user_from=request.user,
                     user_to=user).delete()

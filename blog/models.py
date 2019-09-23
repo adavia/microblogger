@@ -17,6 +17,9 @@ class Post(models.Model):
         blank=True
     )
 
+    def __str__(self):
+        return f"{self.author.username} post"
+
 def unique_file_name(filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
