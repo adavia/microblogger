@@ -7,10 +7,10 @@ class Paginator {
     
     loadMore(container, url, e) {
         e.stopImmediatePropagation();
-        const target = e.target;
-        const $container = $(target).find(container);
+        const self = e.target;
+        const $container = $(self).find(container);
         
-        if (target.scrollTop + target.clientHeight >= target.scrollHeight &&
+        if (self.scrollTop + self.clientHeight >= self.scrollHeight &&
             this.emptyPage == false && 
             this.blockRequest == false) {
             
@@ -20,7 +20,8 @@ class Paginator {
             $.ajax({
                 url: url + this.page,
                 type: 'GET',
-            }).done(response => {
+            })
+            .done(response => {
                 if (response == '') {
                     this.emptyPage = true;
                 } else {
@@ -40,6 +41,17 @@ class User {
         this.follow = el.find('#id_follow_user'); 
         this.followersCount = el.find('#id_followers_count');
         this.follow.on('click', this.followUser.bind(this));
+    }
+
+    _toggleData() {
+        const previousAction = this.follow.data('action');
+        this.follow.data('action', previousAction == 'follow' ? 
+            'unfollow' : 'follow');
+
+        this.follow.text(previousAction == 'follow' ? 'Unfollow' : 'Follow');
+        const previousFollowers = parseInt(this.followersCount.text());
+        this.followersCount.text(previousAction == 'follow' ?  
+            previousFollowers + 1 : previousFollowers - 1);
     }
 
     followUser(e) {
@@ -63,16 +75,10 @@ class User {
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken')
             },
-        }).done(response => {
+        })
+        .done(response => {
             if (response['status'] === 'ok') {
-                const previousAction = $('#id_follow_user').data('action');
-                $('#id_follow_user').data('action', previousAction == 'follow' ? 
-                    'unfollow' : 'follow');
-
-                $self.text(previousAction == 'follow' ? 'Unfollow' : 'Follow');
-                let previousFollowers = parseInt(this.followersCount.text());
-                this.followersCount.text(previousAction == 'follow' ?  
-                    previousFollowers + 1 : previousFollowers - 1);
+                this._toggleData()
             }
         })
         .fail((xhr, status, errorThrown) => {
@@ -93,7 +99,7 @@ class Post {
         }
     }
 
-    toggleLike(elem, action) {
+    _toggleLike(elem, action) {
         if (action === 'like') {
             elem.html(`
                 <svg xmlns="http://www.w3.org/2000/svg" 
@@ -119,17 +125,19 @@ class Post {
 
     deletePost(e) {
         e.stopImmediatePropagation();
-        const $post = $(this).closest('article');
-        const $form = $(this).closest('form');
+        const $this = $(this);
+        const post = $this.closest('article');
+        const form = $this.closest('form');
 
         $.ajax({
-            url: $form.attr('action'),
+            url: form.attr('action'),
             type: 'DELETE',
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken')
             }
-        }).done(response => {
-            $post.remove();
+        })
+        .done(response => {
+            post.remove();
         })
         .fail((xhr, status, errorThrown) => {
             console.log(errorThrown);
@@ -158,13 +166,14 @@ class Post {
             headers: {
                 'X-CSRFToken': Cookies.get('csrftoken')
             },
-        }).done(response => {
+        })
+        .done(response => {
             if (response['status'] === 'ok') {
-                let previousAction = $('span[data-target="post_like"]').data('action');
-                $('span[data-target="post_like"]').data('action', previousAction == 'like' ? 
+                let previousAction = $self.data('action');
+                $self.data('action', previousAction == 'like' ? 
                     'unlike' : 'like');
             
-                this.toggleLike($self, previousAction);
+                this._toggleLike($self, previousAction);
             }
         })
         .fail((xhr, status, errorThrown) => {
@@ -185,7 +194,7 @@ class PostForm {
     constructor(el) {
         this.form = el;
         this.container = $('#id_post_container');
-        this.imgPreview = el.find('#id_preview_img');
+        this.imgPreview = $('<div id="id_preview_img" class="flex flex-wrap -mx-2"></div>');
         el.on('submit', this.addPost.bind(this));
         el.find('#id_image').on('change', this.previewImage.bind(this));
     }
@@ -215,24 +224,27 @@ class PostForm {
             `);
         }
     }
+
+    _renderImgPreview(path) {
+        this.imgPreview.append(`
+            <div class="bg-cover bg-center rounded-lg h-24 w-24 mx-2 mb-4" 
+                style="background-image: url('${path}')">
+                <span class="rounded-full cursor-pointer h-8 w-8 float-right flex items-center 
+                    justify-center bg-gray-800 text-white m-2">x</span>
+            </div>
+        `);
+    }
     
     previewImage(e) {
         const self = e.target;
+        this.form.children('#id_content_field').after(this.imgPreview);
         
         if (self.files) {
             const filesize = self.files.length;
-            
+            this.imgPreview.empty();
             for (let i = 0; i < filesize; i++) {
                 const reader = new FileReader();
-                reader.onload = (e) => {
-                    this.imgPreview.append(`
-                        <div class="bg-cover bg-center rounded-lg h-24 w-24 mx-2 mb-4" 
-                            style="background-image: url('${e.target.result}')">
-                            <span class="rounded-full cursor-pointer h-8 w-8 float-right flex items-center 
-                                justify-center bg-gray-800 text-white m-2">x</span>
-                        </div>
-                    `);
-                }
+                reader.onload = (e) => this._renderImgPreview(e.target.result);
                 reader.readAsDataURL(self.files[i]);
             }
         }

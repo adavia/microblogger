@@ -10,7 +10,7 @@
         <form method="POST" id="id_form_post" action="{% url 'home' %}" 
             enctype="multipart/form-data">
             {% csrf_token %}
-            <div class="w-full mb-6">
+            <div id="id_content_field" class="w-full mb-6">
                 <label 
                     for="{{form.content.id_for_label}}" 
                     class="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2">
@@ -29,7 +29,6 @@
                     <p class="text-red-500 text-xs mt-2">{{error}}</p>
                 {% endfor %}
             </div>
-            <div id="id_preview_img" class="flex flex-wrap -mx-2"></div>
             <div class="flex items-center">
                 <label class="cursor-pointer mr-auto rounded-full border 
                     border-indigo-500 h-12 w-12 flex items-center justify-center">

@@ -1,0 +1,60 @@
+<section id="id_user_detail" class="p-6">    
+    <div class="flex">
+        <div class="flex-shrink-0 rounded-full text-2xl text-bold 
+            bg-indigo-300 h-20 w-20 flex items-center justify-center">
+            {{user.username|capfirst|slice:1}}
+        </div>
+        <div class="ml-5 mr-auto">
+            <h2 class="font-bold text-2xl" 
+                style="font-family: 'Inconsolata', monospace">
+                {{user.first_name}} {{user.last_name}} 
+            </h2>
+            <div class="text-gray-600 text-sm">@{{user.username}}</div>
+        </div>
+        {% with total_followers=user.followers.count %}
+            <div class="self-center">
+                <h3 class="text-lg text-bold inline-block " 
+                    style="font-family: 'Inconsolata', monospace">
+                    <span id="id_followers_count">{{total_followers}}</span> 
+                        Follower{{total_followers|pluralize}}
+                </h3>
+                {% if request.user != user %}
+                    <a href="{% url 'user_follow' %}" data-id="{{ user.id }}" id="id_follow_user"
+                        data-action="{% if request.user 
+                        in user.followers.all %}un{% endif %}follow" 
+                        class="text-lg text-bold text-indigo-400 
+                            border border-indigo-400 rounded-full p-2 ml-5"
+                        style="font-family: 'Inconsolata', monospace">
+                        
+                        {% if request.user not in user.followers.all %}
+                            Follow
+                        {% else %}
+                            Unfollow
+                        {% endif %}   
+                    </a>
+                {% endif %}
+            </div>
+        {% endwith %}
+    </div>
+</section>
+<nav class="px-6 py-3">
+    <ul class="flex border-b">
+        <li class="-mb-px mr-1">
+            <a class="bg-white inline-block border-l border-t 
+                border-r rounded-t py-2 px-4 
+                text-blue-700 font-semibold" 
+                href="{% url 'user_detail' user.username %}">
+                Active
+            </a>
+        </li>
+        {% if user == request.user %}
+            <li class="mr-1">
+                <a class="bg-white inline-block py-2 px-4 text-blue-500 
+                    hover:text-blue-800 font-semibold" 
+                    href="{% url 'password_change' %}">
+                    Profile
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</nav>
