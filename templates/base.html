@@ -12,7 +12,7 @@
 </head>
 
 <body class="overflow-y-hidden" style="font-family: 'Montserrat', sans-serif">
-    <div class="flex flex-no-wrap justify-between h-screen">
+    <div class="flex flex-no-wrap justify-between">
         <nav class="w-full md:w-2/6 z-10 bg-indigo-100">
             {% with view_name=request.resolver_match.url_name %}
             <ul class="py-6">
@@ -66,10 +66,10 @@
                     </a>
                 </li>
                 <li style="font-family: 'Inconsolata', monospace">
-                    <a class="block {% if view_name == 'explore' %} bg-indigo-200 text-indigo-100 
+                    <a class="block {% if view_name == 'user_list' %} bg-indigo-200 text-indigo-100 
                         {% else %} text-indigo-600 {% endif %} hover:bg-indigo-200 
                         hover:text-indigo-100 px-6 py-3" 
-                        href="">
+                        href="{% url 'user_list' %}">
                         <svg class="stroke-current text-indigo-500 inline-block h-6 w-6" 
                             viewBox="0 0 20 20">
 						    <path d="M18.092,5.137l-3.977-1.466h-0.006c0.084,0.042-0.123-0.08-0.283,
@@ -130,7 +130,8 @@
                     </a>
                 </li>
                 <li style="font-family: 'Inconsolata', monospace">
-                    <a class="block text-indigo-600 hover:bg-indigo-200 hover:text-indigo-100 px-6 py-3" 
+                    <a class="block {% if view_name == 'password_change' %} bg-indigo-200 text-indigo-100 
+                        {% else %} text-indigo-600 {% endif %} hover:text-indigo-100 px-6 py-3" 
                         href="{% url 'password_change' %}">
                         <svg class="stroke-current text-indigo-500 inline-block h-6 w-6" 
                             viewBox="0 0 20 20">
@@ -238,7 +239,7 @@
                     </div>
                 </li>
                 <li class="px-6 pt-6">
-                    <a href="" class="w-9/12 block bg-transparent
+                    <a href="{% url 'home' %}" class="w-9/12 block bg-transparent
                     text-center hover:bg-indigo-500 
                     text-indigo-700 hover:text-white py-2 px-4 border 
                     border-indigo-500 hover:border-transparent rounded">
@@ -248,7 +249,8 @@
             </ul>
             {% endwith %}
         </nav>
-        <main id="id_main_content" class="md:w-5/6 mx-auto overflow-y-auto border-r">
+        <main id="id_main_content" data-view="{{view_name}}" 
+            class="md:w-5/6 h-screen overflow-y-auto border-r mx-auto">
             {% block content %}{% endblock content %}
         </main>
         <div class="container md:w-3/6 mx-auto overflow-y-auto p-6">
@@ -256,6 +258,10 @@
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script
+        src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+        crossorigin="anonymous"></script>
     <script src="{% static 'js/index.js' %}"></script>
 </body>
 </html>

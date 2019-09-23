@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -33,8 +34,12 @@ LOGIN_URL = 'account/login'
 LOGOUT_URL = 'account/logout'
 
 # Base user model
-
 AUTH_USER_MODEL = 'account.User'
+
+ABSOLUTE_URL_OVERRIDES = {
+    'account.user': lambda u: reverse_lazy('user_detail',
+        args=[u.username])
+}
 
 # Application definition
 

@@ -113,4 +113,4 @@ def post_like(request):
             return JsonResponse({'status':'ok'})
         except:
             pass
-    return JsonResponse({'status':'ok'})
+    return JsonResponse({'status':'ko'})
