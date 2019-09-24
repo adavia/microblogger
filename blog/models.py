@@ -16,6 +16,10 @@ class Post(models.Model):
         related_name='posts_liked',
         blank=True
     )
+    total_likes = models.PositiveIntegerField(
+        db_index=True,
+        default=0
+    )
 
     def __str__(self):
         return f"{self.author.username} post"

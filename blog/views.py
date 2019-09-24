@@ -50,6 +50,7 @@ class HomeView(
 
     def get(self, request, *args, **kwargs):
         posts = Post.objects.all().order_by('-date_posted')
+        # posts_by_popularity = Post.objects.order_by('-total_likes')
         paginator = Paginator(posts, 10)
         page = request.GET.get('page')
         form = self.form_class()

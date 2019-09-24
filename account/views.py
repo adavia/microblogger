@@ -1,4 +1,5 @@
 import logging
+from project.redis import r
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.views.decorators.http import require_POST
@@ -54,8 +55,28 @@ def user_detail(request, username):
         username=username,
         is_active=True
     )
+
+    # Increment image ranking by 1
+    r.zincrby('user_ranking', user.id, 1)
+
+    # Increment total user details views by one
+    total_views = r.incr('user:{}:views'.format(user.id))
+
+    # Get image ranking dictionary
+    user_ranking = r.zrange('user_ranking', 0, -1, desc=True)[:10]
+    user_ranking_ids = [int(id) for id in user_ranking]
+    # get most viewed images
+    most_viewed = list(
+        User.objects.filter(
+        id__in=user_ranking_ids)
+    )
+
+    most_viewed.sort(key=lambda x: user_ranking_ids.index(x.id))
+
     return render(request, 'account/detail.html', {
-        'user': user
+        'user': user,
+        'total_views': total_views,
+        'most_viewed': most_viewed
     })
 
 @ajax_required

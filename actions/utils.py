@@ -1,7 +1,18 @@
 import datetime
+import functools
 from django.utils import timezone
 from django.contrib.contenttypes.models import ContentType
 from .models import Action
+
+def memoize(method):
+    @functools.wraps(method)
+    def memoizer(*args, **kwargs):
+        method._cache = getattr(method, '_cache', {})
+        key = args
+        if key not in method._cache:
+            method._cache[key] = method(*args, **kwargs)
+        return method._cache[key]
+    return memoizer
 
 def create_action(user, verb, target=None):
     # Check for any similar action made in the last minute
@@ -25,3 +36,5 @@ def create_action(user, verb, target=None):
         return True
     
     return False
+
+

@@ -9,7 +9,9 @@
                 style="font-family: 'Inconsolata', monospace">
                 {{user.first_name}} {{user.last_name}} 
             </h2>
-            <div class="text-gray-600 text-sm">@{{user.username}}</div>
+            <div class="text-gray-600 text-sm">
+                @{{user.username}}
+            </div>
         </div>
         {% with total_followers=user.followers.count %}
             <div class="self-center">

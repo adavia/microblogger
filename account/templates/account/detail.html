@@ -5,11 +5,35 @@
         text-indigo-600 border-b p-4" 
         style="font-family: 'Inconsolata', monospace">
         {{user.first_name}} {{user.last_name}}
+        <span class="font-normal text-indigo-400 text-lg">
+            {{total_views}} views
+        </span>
     </div>
     {% include "account/_user_tabs.html" %}
     <section id="id_user_posts">
         {% include "blog/_post_list.html" with 
         posts=user.post_set.all user=request.user %}
     </section>
+
+    {% block user_ranking %}
+        <section class="p-6">
+            <h1 class="text-3xl font-bold leading-tight 
+                text-indigo-600 mb-4"
+                style="font-family: 'Inconsolata', monospace">
+                Famous profiles
+            </h1>
+            <div class="bg-gray-100 rounded-lg border border-gray-400">
+                {% for user in most_viewed %}
+                    <div class="flex items-center justify-between p-4"> 
+                        <h2 class="font-bold text-lg" 
+                            style="font-family: 'Inconsolata', monospace">
+                            {{user.first_name}} {{user.last_name}}
+                        </h2>
+                        <span class="text-sm text-indigo-500">@{{ user.username }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endblock user_ranking %}
 {% endblock content %}
 
